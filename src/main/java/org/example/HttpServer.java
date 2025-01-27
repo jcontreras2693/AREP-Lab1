@@ -1,20 +1,20 @@
 package org.example;
 
-import java.net.*;
 import java.io.*;
+import java.net.*;
 
 public class HttpServer {
     public static void main(String[] args) throws IOException, URISyntaxException {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(35000);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("Could not listen on port: 35000.");
             System.exit(1);
         }
+
         boolean running = true;
-        while (running){
+        while (running) {
             Socket clientSocket = null;
             try {
                 System.out.println("Listo para recibir ...");
@@ -24,18 +24,17 @@ public class HttpServer {
                 System.exit(1);
             }
 
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            OutputStream out = clientSocket.getOutputStream();
             BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            clientSocket.getInputStream()));
-            String inputLine, outputLine;
+                    new InputStreamReader(clientSocket.getInputStream()));
+            String inputLine;
 
             boolean isFirstLine = true;
-            String file = "";
+            String filePath = "";
 
             while ((inputLine = in.readLine()) != null) {
-                if (isFirstLine){
-                    file = inputLine.split(" ")[1];
+                if (isFirstLine) {
+                    filePath = inputLine.split(" ")[1];
                     isFirstLine = false;
                 }
                 System.out.println("Received: " + inputLine);
@@ -44,67 +43,31 @@ public class HttpServer {
                 }
             }
 
-            URI requestedFile = new URI(file);
-            System.out.println("file: " + requestedFile);
+            // Si el archivo solicitado es "/", redirigir a "index.html"
+            if (filePath.equals("/")) {
+                filePath = "/index.html";
+            }
 
-            if(requestedFile.getPath().startsWith("/app/hello")){
-                outputLine = helloRestService(requestedFile.getPath(), requestedFile.getQuery());
-                out.println(outputLine);
-            } else{
-                outputLine = """
-                        HTTP/1.1 200 OKc\r
-                        Content-Type: text/html\r
-                        \r
-                        <!DOCTYPE html>
-                        <html>
-                            <head>
-                                <title>Form Example</title>
-                                <meta charset="UTF-8">
-                                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            </head>
-                            <body>
-                                <h1>Form with GET</h1>
-                                <form action="/app/hello">
-                                    <label for="name">Name:</label><br>
-                                    <input type="text" id="name" name="name" value="John"><br><br>
-                                    <input type="button" value="Submit" onclick="loadGetMsg()">
-                                </form>\s
-                                <div id="getrespmsg"></div>
+            // Intentar leer el archivo solicitado
+            File requestedFile = new File("src/main/resources/web" + filePath);
+            if (requestedFile.exists() && !requestedFile.isDirectory()) {
+                String contentType = getMimeType(filePath);
 
-                                <script>
-                                    function loadGetMsg() {
-                                        let nameVar = document.getElementById("name").value;
-                                        const xhttp = new XMLHttpRequest();
-                                        xhttp.onload = function() {
-                                            document.getElementById("getrespmsg").innerHTML =
-                                            this.responseText;
-                                        }
-                                        xhttp.open("GET", "/app/hello?name="+nameVar);
-                                        xhttp.send();
-                                    }
-                                </script>
+                // Enviar encabezados HTTP
+                out.write(("HTTP/1.1 200 OK\r\n" +
+                        "Content-Type: " + contentType + "\r\n" +
+                        "Content-Length: " + requestedFile.length() + "\r\n" +
+                        "\r\n").getBytes());
 
-                                <h1>Form with POST</h1>
-                                <form action="/app/hello">
-                                    <label for="postname">Name:</label><br>
-                                    <input type="text" id="postname" name="name" value="John"><br><br>
-                                    <input type="button" value="Submit" onclick="loadPostMsg(postname)">
-                                </form>
-                               \s
-                                <div id="postrespmsg"></div>
-                               \s
-                                <script>
-                                    function loadPostMsg(name){
-                                        let url = "/app/hello?name=" + name.value;
-
-                                        fetch (url, {method: 'POST'})
-                                            .then(x => x.text())
-                                            .then(y => document.getElementById("postrespmsg").innerHTML = y);
-                                    }
-                                </script>
-                            </body>
-                        </html>""";
-                out.println(outputLine);
+                // Enviar contenido del archivo
+                sendFileContent(requestedFile, out);
+            } else {
+                // Responder con un error 404 si el archivo no existe
+                String errorResponse = "HTTP/1.1 404 Not Found\r\n" +
+                        "Content-Type: text/html\r\n" +
+                        "\r\n" +
+                        "<h1>404 Not Found</h1>";
+                out.write(errorResponse.getBytes());
             }
 
             out.close();
@@ -114,12 +77,31 @@ public class HttpServer {
         serverSocket.close();
     }
 
-    private static String helloRestService(String path, String query) {
-        String response = """
-                HTTP/1.1 200 OKc\r
-                Content-Type: application/json\r
-                \r
-                {"name":"John", "age":30, "car":null}""";
-        return response;
+    private static void sendFileContent(File file, OutputStream out) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+            out.write(buffer, 0, bytesRead);
+        }
+        fileInputStream.close();
+    }
+
+    private static String getMimeType(String filePath) {
+        if (filePath.endsWith(".html")) {
+            return "text/html";
+        } else if (filePath.endsWith(".css")) {
+            return "text/css";
+        } else if (filePath.endsWith(".js")) {
+            return "application/javascript";
+        } else if (filePath.endsWith(".png")) {
+            return "image/png";
+        } else if (filePath.endsWith(".jpg") || filePath.endsWith(".jpeg")) {
+            return "image/jpeg";
+        } else if (filePath.endsWith(".gif")) {
+            return "image/gif";
+        } else {
+            return "application/octet-stream";
+        }
     }
 }

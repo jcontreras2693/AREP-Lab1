@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f7f7;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #ffcb05;
+    color: #2a75bb;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-bottom: 5px solid #2a75bb;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section h2 {
+    color: #2a75bb;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 2px solid #2a75bb;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #2a75bb;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #1a4f8a;
+}
+
+.team-section {
+    margin-top: 30px;
+}
+
+.team-section h2 {
+    color: #2a75bb;
+}
+
+.pokemon-card {
+    display: inline-block;
+    background-color: #ffcb05;
+    color: #2a75bb;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pokemon-card:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
+}

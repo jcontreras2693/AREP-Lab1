@@ -1,9 +1,7 @@
-package org.example;
+package org.example.classwork;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.io.*;
-import java.security.spec.RSAOtherPrimeInfo;
 
 public class URLParser {
     public static void main(String[] args) throws MalformedURLException {

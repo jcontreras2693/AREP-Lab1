@@ -1,4 +1,4 @@
-package org.example;
+package org.example.classwork;
 
 import java.net.*;
 import java.io.*;
