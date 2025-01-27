@@ -1,25 +1,28 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
     margin: 0;
     padding: 0;
+    background-image: url("images/grookey.png");
+    background-size: cover; /* Asegura que la imagen cubra toda la pantalla */
+    background-position: absolute;
+    background-repeat: no-repeat;
 }
 
 header {
-    background-color: #ffcb05;
-    color: #2a75bb;
+    background-color: #eb1a1a;
+    color: white;
     padding: 20px;
     text-align: center;
     font-size: 1.5rem;
     font-weight: bold;
-    border-bottom: 5px solid #2a75bb;
+    border-bottom: 5px solid black;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 450px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: #706f6f;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -29,7 +32,7 @@ header {
 }
 
 .form-section h2 {
-    color: #2a75bb;
+    color: white;
 }
 
 form {
@@ -45,8 +48,15 @@ input[type="text"] {
     font-size: 1rem;
 }
 
+input[type="number"] {
+    padding: 10px;
+    border: 2px solid #2a75bb;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
 button {
-    background-color: #2a75bb;
+    background-color: #eb1a1a;
     color: white;
     border: none;
     padding: 10px;
@@ -57,7 +67,7 @@ button {
 }
 
 button:hover {
-    background-color: #1a4f8a;
+    background-color: #b01515;
 }
 
 .team-section {
@@ -65,7 +75,7 @@ button:hover {
 }
 
 .team-section h2 {
-    color: #2a75bb;
+    color: white;
 }
 
 .pokemon-card {
