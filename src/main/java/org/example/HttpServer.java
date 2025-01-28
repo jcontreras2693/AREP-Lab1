@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 
 public class HttpServer {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(35000);
@@ -13,78 +13,103 @@ public class HttpServer {
             System.exit(1);
         }
 
-        boolean running = true;
-        while (running) {
-            Socket clientSocket = null;
-            try {
-                System.out.println("Listo para recibir ...");
-                clientSocket = serverSocket.accept();
-            } catch (IOException e) {
-                System.err.println("Accept failed.");
-                System.exit(1);
+        while (true) {
+            Socket clientSocket = acceptConnection(serverSocket);
+
+            if (clientSocket != null) {
+                handleRequest(clientSocket);
             }
+        }
+    }
 
-            OutputStream out = clientSocket.getOutputStream();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream()));
-            String inputLine;
+    private static Socket acceptConnection(ServerSocket serverSocket) {
+        try {
+            System.out.println("Listo para recibir ...");
+            return serverSocket.accept();
+        } catch (IOException e) {
+            System.err.println("Accept failed.");
+            return null;
+        }
+    }
 
-            boolean isFirstLine = true;
-            String filePath = "";
+    private static void handleRequest(Socket clientSocket) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+             OutputStream out = clientSocket.getOutputStream()) {
 
-            while ((inputLine = in.readLine()) != null) {
-                if (isFirstLine) {
-                    filePath = inputLine.split(" ")[1];
-                    isFirstLine = false;
-                }
-                System.out.println("Received: " + inputLine);
-                if (!in.ready()) {
-                    break;
-                }
-            }
+            String inputLine = in.readLine();
+            if (inputLine == null) return;
 
-            // Si el archivo solicitado es "/", redirigir a "index.html"
-            if (filePath.equals("/")) {
-                filePath = "/index.html";
-            }
+            String[] requestLine = inputLine.split(" ");
+            String method = requestLine[0];
+            String filePath = requestLine[1].equals("/") ? "/index.html" : requestLine[1];
 
-            // Intentar leer el archivo solicitado
-            File requestedFile = new File("src/main/resources/web" + filePath);
-            if (requestedFile.exists() && !requestedFile.isDirectory()) {
-                String contentType = getMimeType(filePath);
-
-                // Enviar encabezados HTTP
-                out.write(("HTTP/1.1 200 OK\r\n" +
-                        "Content-Type: " + contentType + "\r\n" +
-                        "Content-Length: " + requestedFile.length() + "\r\n" +
-                        "\r\n").getBytes());
-
-                // Enviar contenido del archivo
-                sendFileContent(requestedFile, out);
-            } else {
-                // Responder con un error 404 si el archivo no existe
-                String errorResponse = "HTTP/1.1 404 Not Found\r\n" +
-                        "Content-Type: text/html\r\n" +
-                        "\r\n" +
-                        "<h1>404 Not Found</h1>";
-                out.write(errorResponse.getBytes());
+            if (method.equals("GET")) {
+                handleGetRequest(filePath, out);
+            } else if (method.equals("POST")) {
+                handlePostRequest(in, out, filePath);
             }
 
             out.close();
             in.close();
             clientSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        serverSocket.close();
+    }
+
+    private static void handleGetRequest(String filePath, OutputStream out) throws IOException {
+        File requestedFile = new File("src/main/resources/web" + filePath);
+
+        if (requestedFile.exists() && !requestedFile.isDirectory()) {
+            String contentType = getMimeType(filePath);
+
+            out.write(("HTTP/1.1 200 OK\r\n" +
+                    "Content-Type: " + contentType + "\r\n" +
+                    "Content-Length: " + requestedFile.length() + "\r\n" +
+                    "\r\n").getBytes());
+
+            sendFileContent(requestedFile, out);
+        } else {
+            String errorResponse = "HTTP/1.1 404 Not Found\r\n" +
+                    "Content-Type: text/html\r\n" +
+                    "\r\n" +
+                    "<h1>404 Not Found</h1>";
+            out.write(errorResponse.getBytes());
+        }
+    }
+
+    private static void handlePostRequest(BufferedReader in, OutputStream out, String filePath) throws IOException {
+        StringBuilder body = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null && !inputLine.isEmpty()) {
+            System.out.println("Header: " + inputLine);
+        }
+
+        while ((inputLine = in.readLine()) != null) {
+            body.append(inputLine).append("\n");
+        }
+
+        System.out.println("POST request body: " + body.toString());
+
+        String responseBody = "<h1>POST Request Received</h1>" +
+                "<p>Body Content: " + body.toString() + "</p>";
+
+        String response = "HTTP/1.1 200 OK\r\n" +
+                "Content-Type: text/html\r\n" +
+                "Content-Length: " + responseBody.length() + "\r\n" +
+                "\r\n" +
+                responseBody;
+        out.write(response.getBytes());
     }
 
     private static void sendFileContent(File file, OutputStream out) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
-            out.write(buffer, 0, bytesRead);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
         }
-        fileInputStream.close();
     }
 
     private static String getMimeType(String filePath) {
