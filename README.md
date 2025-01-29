@@ -25,24 +25,14 @@ Ejemplo de la página incial.
 Ejemplo del funcionamiento de la aplicación.
 ![](images/employed-page.png)
 
-## Running the tests
+## Tests
 
-Explain how to run the automated tests for this system
+Las pruebas realizadas verifican los getters y setters de la clase Pokemon.
 
-### Break down into end to end tests
-
-Explain what these tests test and why
+Para ejecutar las pruebas desde la consola se utiliza el siguiente comando:
 
 ```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+mvn test
 ```
 
 ## Authors
