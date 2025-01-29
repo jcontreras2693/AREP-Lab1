@@ -12,7 +12,7 @@
 <div class="container">
   <section class="form-section">
     <h2>Agregar un Pokémon</h2>
-    <form id="addPokemonForm">
+    <form id="addPokemonForm" onsubmit="return false;">
       <input type="text" id="pokemonName" placeholder="Nombre" maxlength="30" required>
       <input type="number" id="pokemonLevel" placeholder="Nivel" min="1" max="100" required>
       <button type="submit">Agregar al Equipo</button>
@@ -21,6 +21,7 @@
   <section class="team-section">
     <h2>Equipo Actual</h2>
     <div id="teamContainer">
+      <! Acá se mostraran los datos del equipo. >
     </div>
   </section>
 </div>

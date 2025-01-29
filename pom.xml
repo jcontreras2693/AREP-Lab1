@@ -13,6 +13,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencies>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -25,12 +28,11 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>org.example.HttpServer</mainClass>
+                            <mainClass>org.example.PokemonServer</mainClass>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
