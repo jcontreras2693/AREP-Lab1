@@ -68,6 +68,8 @@ button {
 
 button:hover {
     background-color: #b01515;
+    transform: scale(1.01);
+    transition: transform 0.3s;
 }
 
 .team-section {
@@ -80,16 +82,17 @@ button:hover {
 
 .pokemon-card {
     display: inline-block;
-    background-color: #ffcb05;
-    color: #2a75bb;
+    background-color: #eb1a1a;
+    color: white;
     padding: 15px;
     margin: 10px;
     border-radius: 10px;
+    cursor: default;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .pokemon-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
     transition: transform 0.3s;
 }
