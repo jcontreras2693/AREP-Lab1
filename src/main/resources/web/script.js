@@ -14,7 +14,6 @@ document.getElementById('addPokemonForm').addEventListener('submit', async (e) =
     });
 
     if (response.ok) {
-        alert('Pokémon agregado al equipo');
         updateTeamList();
     } else {
         alert('Error al agregar el Pokémon');
