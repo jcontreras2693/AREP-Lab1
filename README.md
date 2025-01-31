@@ -1,9 +1,10 @@
-# TALLER DISEÑO Y ESTRUCTURACIÓN DE APLICACIONES DISTRIBUIDAS EN INTERNET
+# Taller 1 | AREP
+
+## TALLER DISEÑO Y ESTRUCTURACIÓN DE APLICACIONES DISTRIBUIDAS EN INTERNET
 
 Durante este taller se escribió un servidor web que soporta múlltiples solicitudes seguidas no concurrentes. El servidor lee los archivos del disco local y retorna todos los archivos solicitados, incluyendo HTML, JavaScript, CSS e imágenes. Se contruyó una aplicación web con las archivos anteriormente mencionados para probar el servidor. En la aplicación se incluye la comunicación asíncrona con unos servicios REST en el backend. NO se usaron frameworks web como Spark o Spring, solo Java y las librerías para manejo de la red.
 
-## Prerequisites
-
+## Prerequisitos
 Para ejecutar este proyecto se necesita lo siguiente:
 
 - Java 17 o superior
@@ -14,13 +15,13 @@ Si cuenta con un IDE de Java en su equipo como NetBeans, IntelliJ, VS Code, entr
 
 ## Instalación
 
-Puede descargar el .zip del proyecto directamente desde GitHub. Si prefiere clonar el repositorio desde la terminal necesitará tener git en su dispositivo, lo puede hacer con el siguiente comando:
+Puede descargar el .zip del proyecto directamente desde GitHub. Si prefiere clonar el repositorio desde la terminal necesitará tener git en su dispositivo, lo puede hacer con el siguiente comando desde git bash:
 ```
 git clone https://github.com/jcontreras2693/AREP-Lab1.git
 ``` 
-En caso de no contar con un IDE de Java necesitará tener Maven instalado en su dispositivo e ingresar a la carpeta resultante de la descarga y ejecute los siguientes comandos de Maven desde la terminal:
+En caso de no contar con un IDE de Java necesitará tener Maven instalado en su dispositivo e ingresar a la carpeta raiz del proyecto descargado, ejecute los siguientes comandos de Maven desde la terminal:
 ```
-mvn clean install
+mvn clean compile
 ```
 ```
 mvn exec:java -Dexec.mainClass="org.example.PokemonServer"
@@ -43,7 +44,12 @@ Para ejecutar las pruebas desde la consola se utiliza el siguiente comando:
 mvn test
 ```
 
+![](/src/images/tests.png)
+
 ## Authors
 
+* **Juan David Contreras Becerra** - *Taller 1 | AREP* - [AREP-Lab1](https://github.com/jcontreras2693/AREP-Lab1.git)
+
+## Acknowledgements
+
 * **Billie Thompson** - *README template* - [PurpleBooth](https://github.com/PurpleBooth)
-* **Juan David Contreras** - *Taller 1  AREP* - [AREP-Lab1](https://github.com/jcontreras2693/AREP-Lab1.git)
